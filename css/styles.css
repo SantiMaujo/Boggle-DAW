@@ -1,107 +1,54 @@
-/* Definición de colores */
-#game {
-    min-height: 600px;
-    width: 350px;
-    margin: 0 auto;
-    border: 1px solid #ccc;
-    padding-bottom: 20px;
-    background-color: #F57912; /* $orange */
-}
-
-#game section {
-    max-width: 280px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-#game header {
-    width: auto;
-    margin: 10px auto;
-    text-align: center;
-}
-
-#game header img {
-    max-width: 200px;
-}
-
-#dice-grid {
-    width: 280px;
-    height: 275px;
-    margin: 0 auto;
-    border: 5px solid #FFCA08; /* $yellow-orange */
-    background-color: #398bd4; /* $blue */
-}
-
-.dice {
-    text-align: center;
-}
-
-.dice button {
-    width: 45px;
-    height: 46px;
-    margin: 3px;
-    border: none;
-    border-radius: 8px;
-    outline: none;
-    background-color: #fff;
-    box-shadow: -2px 2px 2px #000;
-    font-weight: 800;
-}
-
-.dice .selected {
-    background-color: #acceec; /* $light-blue */
-}
-
-.dice:first-child {
-    margin-top: 6px;
-}
-
-#word-info {
-    margin-top: 20px;
-}
-
-#word-info * {
-    display: inline;
-}
-
-#word-info #current-word {}
-
-#word-info button {
-    float: right;
-}
-
-#score-table {
-    width: 50%;
-    margin-left: 35px;
-    margin-top: 20px;
-    border-spacing: 0;
-    outline: 3px solid #FFCA08; /* $yellow-orange */
-}
-
-#score-table tr th {
-    text-align: left;
-}
-
-#score-table tr th,
-#score-table tr td {
-    padding: 2px;
+/* Estilos básicos */
+body {
+    font-family: Arial, sans-serif;
     margin: 0;
-    background-color: #fff;
-    border-bottom: 3px solid #FFCA08; /* $yellow-orange */
+    padding: 0;
 }
 
-#score-table tr th:first-child,
-#score-table tr td:first-child {
-    width: 70%;
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 1em;
+    text-align: center;
 }
 
-#score-table tr th:last-child,
-#score-table tr td:last-child {
-    width: 30%;
-    border-left: 3px solid #FFCA08; /* $yellow-orange */
+header nav a {
+    color: #fff;
+    margin: 0 1em;
+    text-decoration: none;
 }
 
-#score-table tr:last-child tr,
-#score-table tr:last-child td {
-    border-bottom: none;
+main {
+    padding: 2em;
+}
+
+#game-setup, #game-board {
+    margin: 2em auto;
+    max-width: 600px;
+    text-align: center;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1em;
+    margin: 2em 0;
+}
+
+#board div {
+    background-color: #eee;
+    border: 1px solid #ccc;
+    padding: 2em;
+    font-size: 2em;
+    text-align: center;
+    cursor: pointer;
+}
+
+#current-word, #found-words, #score {
+    margin: 1em 0;
+}
+
+#timer {
+    font-size: 1.5em;
+    margin: 1em 0;
 }
