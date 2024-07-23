@@ -1,61 +1,41 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <title>Boggl Project</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boggle</title>
+    <link rel="stylesheet" href="../css/styles.css">
 </head>
-<link rel="stylesheet" href="css/normalize.css">
-<link rel="stylesheet" href="css/styles.css">
 <body>
-    <section id="game">
-        <header>
-            <img src="http://qumani.com/qdserve/boggle-logo.png" alt="BOGGLE" />
-        </header>
-        <section id="dice-grid">
-            <div class="dice">
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-                <button>1</button>
-            </div>
+    <header>
+        <h1>Boggle</h1>
+        <nav>
+            <a href="contact.html">Contacto</a>
+        </nav>
+    </header>
+    <main>
+        <section id="game-setup">
+            <h2>Configuración del juego</h2>
+            <label for="player-name">Nombre del jugador:</label>
+            <input type="text" id="player-name" maxlength="20">
+            <label for="time-limit">Límite de tiempo:</label>
+            <select id="time-limit">
+                <option value="1">1 minuto</option>
+                <option value="2">2 minutos</option>
+                <option value="3">3 minutos</option>
+            </select>
+            <button id="start-game">Iniciar Juego</button>
         </section>
-        <section id="word-info">
-            <div id="word-holder">
-                <h5>Current Word:</h5>
-                <p id="current-word"></p>
+        <section id="game-board" style="display:none;">
+            <div id="timer"></div>
+            <div id="board">
+                <!-- Aquí se generará el tablero de 4x4 -->
             </div>
-            <button id="submit-btn">Submit Word</button>
+            <div id="current-word"></div>
+            <div id="found-words"></div>
+            <div id="score"></div>
         </section>
-        <table id="score-table">
-            <tr>
-                <th>Word</th>
-                <th>Score</th>
-            </tr>
-            <tr>
-                <td>Total:</td>
-                <td id="total-points">0</td>
-            </tr>
-        </table>
-    </section>
-<script type="text/javascript" src="scripts/script.js"></script>
+    </main>
+    <script src="../js/script.js"></script>
 </body>
 </html>
