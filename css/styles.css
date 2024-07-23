@@ -5,52 +5,81 @@ body {
     padding: 0;
 }
 
+/* Estilos para el encabezado */
 header {
     background-color: #333;
     color: #fff;
     padding: 1em;
     text-align: center;
+    position: fixed; /* Fija el encabezado en la parte superior */
+    width: 100%; /* Asegura que el encabezado ocupe todo el ancho */
+    top: 0; /* Alinea el encabezado en la parte superior */
+    left: 0; /* Alinea el encabezado en el borde izquierdo */
+    z-index: 1000; /* Asegura que el encabezado esté sobre otros elementos */
 }
 
+header h1 {
+    margin: 0; /* Elimina el margen del título */
+}
+
+/* Estilo para los enlaces de navegación en el encabezado */
 header nav a {
     color: #fff;
     margin: 0 1em;
     text-decoration: none;
 }
 
+/* Ajusta el contenido principal para que no quede oculto detrás del encabezado */
 main {
     padding: 2em;
+    margin-top: 60px; /* Añade espacio superior para el encabezado fijo */
 }
 
-#game-setup, #game-board {
-    margin: 2em auto;
-    max-width: 600px;
-    text-align: center;
+/* Estilos generales para la configuración del juego */
+#game-setup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: calc(100vh - 60px); /* Altura de la ventana menos el encabezado */
+    padding: 20px;
 }
 
-#board {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1em;
-    margin: 2em 0;
+/* Estilos para el subtítulo del juego */
+#game-setup h2 {
+    margin-top: 0; /* Elimina el margen superior del subtítulo */
+    margin-bottom: 15px; /* Espacio debajo del subtítulo */
 }
 
-#board div {
-    background-color: #eee;
-    border: 1px solid #ccc;
-    padding: 2em;
-    font-size: 2em;
-    text-align: center;
+/* Estilos para los elementos del formulario */
+#game-setup label {
+    margin-bottom: 10px; /* Aumenta el espacio entre los labels */
+    display: block; /* Asegura que el label ocupe toda la línea */
+    text-align: center; /* Centra el texto del label */
+}
+
+#game-setup input,
+#game-setup select {
+    margin-bottom: 15px; /* Espacio entre los elementos del formulario */
+    width: 100%; /* Ancho completo del contenedor */
+    max-width: 500px; /* Ancho máximo del formulario */
+    padding: 10px;
+    box-sizing: border-box; /* Incluye el padding en el cálculo del ancho */
+}
+
+#game-setup button {
+    background-color: orange;
+    color: white;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    border: none;
+    padding: 10px 20px;
     cursor: pointer;
+    width: 100%; /* Ancho completo del contenedor */
+    max-width: 500px; /* Ancho máximo del botón */
 }
 
-#current-word, #found-words, #score {
-    margin: 1em 0;
-}
-
-#timer {
-    font-size: 1.5em;
-    margin: 1em 0;
+#game-setup button:hover {
+    background-color: darkorange;
 }
 
 /* Estilos generales */
@@ -107,6 +136,7 @@ button:hover {
     text-decoration: none;
     cursor: pointer;
 }
+
 /* Estilos generales para el formulario de contacto */
 #contact-form {
     display: flex;
@@ -117,13 +147,20 @@ button:hover {
     padding: 20px;
 }
 
-/* Estilos para los elementos del formulario */
-#contact-form h2 {
-    margin-bottom: 10px; /* Espacio debajo del título */
+/* Estilos para el título principal */
+header h1 {
+    margin-bottom: 10px; /* Espacio debajo del título principal */
 }
 
+/* Estilos para el subtítulo del formulario */
+#contact-form h2 {
+    margin-top: 0; /* Elimina el margen superior del subtítulo */
+    margin-bottom: 5px; /* Espacio debajo del subtítulo */
+}
+
+/* Estilos para los elementos del formulario */
 #contact-form label {
-    margin-bottom: 5px;
+    margin-bottom: 10px; /* Aumenta el espacio entre los labels */
     display: block; /* Asegura que el label ocupe toda la línea */
     text-align: center; /* Centra el texto del label */
 }
