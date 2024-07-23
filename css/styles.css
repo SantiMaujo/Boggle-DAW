@@ -1,20 +1,14 @@
-:root {
-    --orange: #F57912; 
-    --yellow-orange: #FFCA08;
-    --blue: #398bd4;
-    --light-blue: #acceec;
-}
-
+/* Definición de colores */
 #game {
     min-height: 600px;
     width: 350px;
-    border: 1px solid #ccc;
     margin: 0 auto;
-    background-color: var(--orange);
+    border: 1px solid #ccc;
     padding-bottom: 20px;
+    background-color: #F57912; /* $orange */
 }
 
-#game section { 
+#game section {
     max-width: 280px;
     margin-left: auto;
     margin-right: auto;
@@ -31,11 +25,11 @@
 }
 
 #dice-grid {
-    border: 5px solid var(--yellow-orange);
     width: 280px;
     height: 275px;
     margin: 0 auto;
-    background-color: var(--blue);
+    border: 5px solid #FFCA08; /* $yellow-orange */
+    background-color: #398bd4; /* $blue */
 }
 
 .dice {
@@ -43,19 +37,19 @@
 }
 
 .dice button {
-    height: 46px;
     width: 45px;
+    height: 46px;
     margin: 3px;
+    border: none;
     border-radius: 8px;
+    outline: none;
     background-color: #fff;
     box-shadow: -2px 2px 2px #000;
-    outline: none;
-    border: none;
     font-weight: 800;
 }
 
 .dice .selected {
-    background-color: var(--light-blue);
+    background-color: #acceec; /* $light-blue */
 }
 
 .dice:first-child {
@@ -78,10 +72,10 @@
 
 #score-table {
     width: 50%;
-    outline: 3px solid var(--yellow-orange);
     margin-left: 35px;
     margin-top: 20px;
     border-spacing: 0;
+    outline: 3px solid #FFCA08; /* $yellow-orange */
 }
 
 #score-table tr th {
@@ -92,8 +86,8 @@
 #score-table tr td {
     padding: 2px;
     margin: 0;
-    border-bottom: 3px solid var(--yellow-orange);
     background-color: #fff;
+    border-bottom: 3px solid #FFCA08; /* $yellow-orange */
 }
 
 #score-table tr th:first-child,
@@ -104,7 +98,7 @@
 #score-table tr th:last-child,
 #score-table tr td:last-child {
     width: 30%;
-    border-left: 3px solid var(--yellow-orange);
+    border-left: 3px solid #FFCA08; /* $yellow-orange */
 }
 
 #score-table tr:last-child tr,
