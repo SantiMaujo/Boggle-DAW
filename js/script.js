@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const startButton = document.getElementById('start-game');
     const playerNameInput = document.getElementById('player-name');
     const timeLimitSelect = document.getElementById('time-limit');
+    const modal = document.getElementById('modal');
+    const span = document.getElementsByClassName('close')[0];
 
     startButton.addEventListener('click', function() {
         const playerName = playerNameInput.value.trim();
@@ -16,9 +18,18 @@ document.addEventListener('DOMContentLoaded', function() {
             showModal('El nombre del jugador debe tener al menos 3 letras.');
         }
     });
+
+    span.onclick = function() {
+        modal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
 });
 
-// Lógica del juego
 function startGame(playerName, timeLimit) {
     console.log('Iniciando juego para:', playerName, 'con tiempo:', timeLimit, 'minutos');
     document.getElementById('game-setup').style.display = 'none';
@@ -27,7 +38,6 @@ function startGame(playerName, timeLimit) {
     startTimer(timeLimit * 60, display);
 }
 
-// Temporizador
 function startTimer(duration, display) {
     let timer = duration, minutes, seconds;
     const interval = setInterval(function () {
@@ -51,8 +61,9 @@ function endGame() {
     showModal('El tiempo se ha acabado. ¡Juego terminado!');
 }
 
-// Modal
 function showModal(message) {
-    console.log(message);
-    // Aquí implementaremos la lógica para mostrar un modal con el mensaje
+    const modal = document.getElementById('modal');
+    const modalMessage = document.getElementById('modal-message');
+    modalMessage.textContent = message;
+    modal.style.display = 'block';
 }
