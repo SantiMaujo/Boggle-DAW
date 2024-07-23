@@ -1,143 +1,58 @@
-// list of dice
-var dice = [
-    "aaafrs",
-    "aaeeee",
-    "aafirs",
-    "adennn",
-    "aeeeem",
-    "aeegmu",
-    "aegmnn",
-    "afirsy",
-    "bjkqxz",
-    "ccenst",
-    "ceiilt",
-    "ceilpt",
-    "ceipst",
-    "ddhnot",
-    "dhhlor",
-    "dhlnor",
-    "dhlnor",
-    "eiiitt",
-    "emottt",
-    "ensssu",
-    "fiprsy",
-    "gorrvw",
-    "iprrry",
-    "nootuw",
-    "ooottu"
-];
+'use strict';
 
-// variable for total points
-var totalPoints = 0;
-var totalPointHolder = document.querySelector('#total-points');
+// Lógica de inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    const startButton = document.getElementById('start-game');
+    const playerNameInput = document.getElementById('player-name');
+    const timeLimitSelect = document.getElementById('time-limit');
 
-// get the entire dice grid
-var diceGrid = document.querySelector('.dice');
+    startButton.addEventListener('click', function() {
+        const playerName = playerNameInput.value.trim();
+        const timeLimit = parseInt(timeLimitSelect.value, 10);
 
-// empty var for current word
-var currentWord = [];
+        if (playerName.length >= 3) {
+            startGame(playerName, timeLimit);
+        } else {
+            showModal('El nombre del jugador debe tener al menos 3 letras.');
+        }
+    });
+});
 
-// table reference 
-var table = document.querySelector('#score-table');
-
-// var for the submit button
-var submitBtn = document.querySelector('#submit-btn');
-
-// get HTML buttons for placement
-var allDie = document.querySelectorAll('.dice button');
-
-// get div for current word display
-var showCurrentWord = document.querySelector('#current-word');
-
-// build random dice generator
-(function randomizer(){
-     for( var i=0; i < dice.length; i++){
-          // get each die
-          var currentDie = dice[i].split('');
-          // random die side
-          var diceRoll = Math.floor(Math.random() * 6);
-          // set die innerHTML to current charactor
-          allDie[i].innerHTML = currentDie[diceRoll];
-     };
-}());
-
-// toggle class and add current letter to word
-function selectDie() {
-   // toggle selected class for letters
-   if(!this.classList.contains('selected')){
-       // push letter to array
-       this.setAttribute("class","selected");
-       currentWord.push(this.innerHTML);
-   }else{
-       // function to search for already selected letter and remove it
-       for(var i = currentWord.length; i >= 0; i--) {
-           if(currentWord[i] === this.innerHTML) {
-               // unselect button css
-               //this.removeAttribute("class","selected");
-               // remove item
-               currentWord.splice(i, 1);
-           }
-       }
-   }
-   var wordDisplay = currentWord.join('');
-   showCurrentWord.innerHTML = wordDisplay;      
+// Lógica del juego
+function startGame(playerName, timeLimit) {
+    console.log('Iniciando juego para:', playerName, 'con tiempo:', timeLimit, 'minutos');
+    document.getElementById('game-setup').style.display = 'none';
+    document.getElementById('game-board').style.display = 'block';
+    const display = document.getElementById('timer');
+    startTimer(timeLimit * 60, display);
 }
 
-// apply click event for selection
-for (var i = 0; i < allDie.length; i++) {
-    allDie[i].addEventListener('click', selectDie);
+// Temporizador
+function startTimer(duration, display) {
+    let timer = duration, minutes, seconds;
+    const interval = setInterval(function () {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+
+        display.textContent = minutes + ':' + seconds;
+
+        if (--timer < 0) {
+            clearInterval(interval);
+            endGame();
+        }
+    }, 1000);
 }
 
-// reset word after submit
-function resetWord() {
-   var row = table.insertRow(1);
-   var cell1 = row.insertCell(0);
-   var cell2 = row.insertCell(1);
-   cell1.innerHTML = currentWord.join('');
-   cell2.innerHTML = points;
-   totalPointHolder.innerHTML = totalPoints;
+function endGame() {
+    console.log('El tiempo se ha acabado');
+    showModal('El tiempo se ha acabado. ¡Juego terminado!');
+}
 
-   currentWord = [];
-   showCurrentWord.innerHTML = '';
-   for(var i = 0; i < allDie.length; i++) {
-       allDie[i].removeAttribute("class", "selected");
-   }
-};
-
-// add points
-function addPoints() {
-     var x = currentWord.length;
-     switch(true){
-          case (x < 3):
-               alert('Your word must be more at least 3 characters!');
-               break;
-          case (x === 3 || x === 4):
-               points = 1;
-               totalPoints += points;
-               break;
-          case (x === 5):
-               points = 2;
-               totalPoints += points;
-               break;
-          case (x === 6):
-               points = 3;
-               totalPoints += points;
-               break;
-          case (x === 7):
-               points = 5;
-               totalPoints += points;
-               break;
-          case ( x > 7):
-               points = 11;
-               totalPoints += points;
-               break;
-          default:
-               points = 0;
-     }
-     if(currentWord.length > 2){
-          resetWord();
-     }
-};
-
-submitBtn.addEventListener('click', addPoints);
-
+// Modal
+function showModal(message) {
+    console.log(message);
+    // Aquí implementaremos la lógica para mostrar un modal con el mensaje
+}
