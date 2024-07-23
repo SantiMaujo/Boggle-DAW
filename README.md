@@ -7,7 +7,6 @@ Este es un proyecto del juego Boggle implementado con HTML, CSS y JavaScript.
 - **css/**: Contiene los archivos de estilo.
 - **html/**: Contiene los archivos HTML.
 - **js/**: Contiene los archivos JavaScript.
-- **img/**: Contiene las imágenes del proyecto.
 
 ## Reglas del Juego
 
@@ -31,3 +30,7 @@ Puedes encontrar el código fuente del proyecto en [GitHub](https://github.com/S
 ## Licencia
 
 Este proyecto está licenciado bajo la Licencia MIT.
+
+## Creador
+
+Santiago Maujo
