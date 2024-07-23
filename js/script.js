@@ -7,6 +7,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const timeLimitSelect = document.getElementById('time-limit');
     const modal = document.getElementById('modal');
     const span = document.getElementsByClassName('close')[0];
+    const welcomeMessage = document.getElementById('welcome-message');
+
+    playerNameInput.addEventListener('input', function() {
+        const playerName = playerNameInput.value.trim();
+        if (playerName.length >= 3) {
+            welcomeMessage.textContent = `¡Bienvenido ${playerName}, elige tu temporizador y comienza a jugar!`;
+        } else {
+            welcomeMessage.textContent = '¡Bienvenido, elige tu temporizador y comienza a jugar!';
+        }
+    });
 
     startButton.addEventListener('click', function() {
         const playerName = playerNameInput.value.trim();
