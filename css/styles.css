@@ -1,0 +1,113 @@
+:root {
+    --orange: #F57912; 
+    --yellow-orange: #FFCA08;
+    --blue: #398bd4;
+    --light-blue: #acceec;
+}
+
+#game {
+    min-height: 600px;
+    width: 350px;
+    border: 1px solid #ccc;
+    margin: 0 auto;
+    background-color: var(--orange);
+    padding-bottom: 20px;
+}
+
+#game section { 
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#game header {
+    width: auto;
+    margin: 10px auto;
+    text-align: center;
+}
+
+#game header img {
+    max-width: 200px;
+}
+
+#dice-grid {
+    border: 5px solid var(--yellow-orange);
+    width: 280px;
+    height: 275px;
+    margin: 0 auto;
+    background-color: var(--blue);
+}
+
+.dice {
+    text-align: center;
+}
+
+.dice button {
+    height: 46px;
+    width: 45px;
+    margin: 3px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: -2px 2px 2px #000;
+    outline: none;
+    border: none;
+    font-weight: 800;
+}
+
+.dice .selected {
+    background-color: var(--light-blue);
+}
+
+.dice:first-child {
+    margin-top: 6px;
+}
+
+#word-info {
+    margin-top: 20px;
+}
+
+#word-info * {
+    display: inline;
+}
+
+#word-info #current-word {}
+
+#word-info button {
+    float: right;
+}
+
+#score-table {
+    width: 50%;
+    outline: 3px solid var(--yellow-orange);
+    margin-left: 35px;
+    margin-top: 20px;
+    border-spacing: 0;
+}
+
+#score-table tr th {
+    text-align: left;
+}
+
+#score-table tr th,
+#score-table tr td {
+    padding: 2px;
+    margin: 0;
+    border-bottom: 3px solid var(--yellow-orange);
+    background-color: #fff;
+}
+
+#score-table tr th:first-child,
+#score-table tr td:first-child {
+    width: 70%;
+}
+
+#score-table tr th:last-child,
+#score-table tr td:last-child {
+    width: 30%;
+    border-left: 3px solid var(--yellow-orange);
+}
+
+#score-table tr:last-child tr,
+#score-table tr:last-child td {
+    border-bottom: none;
+}
