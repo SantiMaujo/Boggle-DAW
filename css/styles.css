@@ -53,6 +53,25 @@ main {
     margin: 1em 0;
 }
 
+/* Estilos generales */
+body, input, button, textarea, select {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+}
+
+/* Estilos para los botones */
+button {
+    background-color: orange;
+    color: white;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: darkorange;
+}
+
 /* Estilos del modal */
 .modal {
     display: none;
