@@ -12,7 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const showRankingButton = document.getElementById('show-ranking');
     const modal = document.getElementById('modal');
     const closeModalButton = document.querySelector('.close');
-    const rankingBody = document.getElementById('ranking-body');
+    const rankingContent = document.getElementById('ranking-content');
+    const submitWordButton = document.getElementById('submit-word');
+    const feedbackDisplay = document.getElementById('feedback');
 
     let timer;
     let timeLeft;
@@ -27,11 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastSelectedCell = null;
 
     const wordsList = ['test', 'example', 'word']; // Lista de palabras válidas para el juego (placeholder)
-
-    playerNameInput.addEventListener('input', () => {
-        const welcomeMessage = document.getElementById('welcome-message');
-        welcomeMessage.textContent = `¡Bienvenido ${playerNameInput.value}, elige tu temporizador y comienza a jugar!`;
-    });
 
     startGameButton.addEventListener('click', () => {
         playerName = playerNameInput.value.trim();
@@ -169,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let gameResults = JSON.parse(localStorage.getItem('gameResults')) || [];
         gameResults.push(gameResult);
         localStorage.setItem('gameResults', JSON.stringify(gameResults));
-        updateRanking();
     }
 
     function resetGame() {
@@ -185,46 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateDisplay();
     }
 
-    function updateRanking() {
-        const gameResults = JSON.parse(localStorage.getItem('gameResults')) || [];
-        gameResults.sort((a, b) => b.score - a.score);
-
-        rankingBody.innerHTML = gameResults.map(result => `
-            <tr>
-                <td>${result.playerName}</td>
-                <td>${result.score}</td>
-                <td>${result.date}</td>
-            </tr>
-        `).join('');
-    }
-
-    function sortRanking(criteria) {
-        const gameResults = JSON.parse(localStorage.getItem('gameResults')) || [];
-        switch (criteria) {
-            case 'name':
-                gameResults.sort((a, b) => a.playerName.localeCompare(b.playerName));
-                break;
-            case 'score':
-                gameResults.sort((a, b) => b.score - a.score);
-                break;
-            case 'date':
-                gameResults.sort((a, b) => new Date(b.date) - new Date(a.date));
-                break;
-        }
-
-        rankingBody.innerHTML = gameResults.map(result => `
-            <tr>
-                <td>${result.playerName}</td>
-                <td>${result.score}</td>
-                <td>${result.date}</td>
-            </tr>
-        `).join('');
-    }
-
-    updateRanking();
-
-    // Modal event listeners
     showRankingButton.addEventListener('click', () => {
+        displayRanking();
         modal.style.display = 'block';
     });
 
@@ -237,4 +195,66 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.style.display = 'none';
         }
     });
+
+    submitWordButton.addEventListener('click', () => {
+        if (currentWord.length < 3) {
+            displayFeedback('¡La palabra debe tener al menos 3 letras!', 'incorrect');
+            return;
+        }
+
+        if (foundWords.includes(currentWord)) {
+            displayFeedback('¡Ya has encontrado esta palabra!', 'incorrect');
+            return;
+        }
+
+        if (wordsList.includes(currentWord.toLowerCase())) {
+            const wordScore = currentWord.length; // Ejemplo de puntuación basada en la longitud de la palabra
+            score += wordScore;
+            foundWords.push(currentWord);
+            displayFeedback('¡Palabra correcta!', 'correct');
+        } else {
+            displayFeedback('¡Palabra incorrecta!', 'incorrect');
+        }
+
+        currentWord = '';
+        selectedCells = [];
+        lastSelectedCell = null;
+        updateDisplay();
+    });
+
+    function displayFeedback(message, type) {
+        feedbackDisplay.textContent = message;
+        feedbackDisplay.style.color = type === 'correct' ? 'green' : 'red';
+        feedbackDisplay.style.display = 'block';
+
+        setTimeout(() => {
+            feedbackDisplay.style.display = 'none';
+        }, 2000); // Oculta el mensaje después de 2 segundos
+    }
+
+    function displayRanking() {
+        const gameResults = JSON.parse(localStorage.getItem('gameResults')) || [];
+        gameResults.sort((a, b) => b.score - a.score);
+
+        rankingContent.innerHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Puntuación</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${gameResults.map(result => `
+                        <tr>
+                            <td>${result.playerName}</td>
+                            <td>${result.score}</td>
+                            <td>${result.date}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
 });

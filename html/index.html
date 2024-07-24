@@ -11,52 +11,40 @@
         <h1>Boggle</h1>
         <nav>
             <a href="../html/contacto.html">Contacto</a>
+            <button id="show-ranking">Ranking</button>
         </nav>
     </header>
     <main>
         <section id="game-setup">
             <h2 id="welcome-message">¡Bienvenido, elige tu temporizador y comienza a jugar!</h2>
-            <form id="setup-form">
-                <label for="player-name">Nombre del jugador:</label>
-                <input type="text" id="player-name" maxlength="20">
-                <label for="time-limit">Límite de tiempo:</label>
-                <select id="time-limit">
-                    <option value="1">1 minuto</option>
-                    <option value="2">2 minutos</option>
-                    <option value="3">3 minutos</option>
-                </select>
-                <button type="button" id="start-game">Iniciar Juego</button>
-            </form>
+            <label for="player-name">Nombre del jugador:</label>
+            <input type="text" id="player-name" maxlength="20">
+            <label for="time-limit">Límite de tiempo:</label>
+            <select id="time-limit">
+                <option value="1">1 minuto</option>
+                <option value="2">2 minutos</option>
+                <option value="3">3 minutos</option>
+            </select>
+            <button id="start-game">Iniciar Juego</button>
         </section>
         <section id="game-board" style="display:none;">
             <div id="timer"></div>
             <div id="board">
                 <!-- Aquí se generará el tablero de 4x4 -->
             </div>
-            <div id="current-word"></div>
+            <div id="current-word-container">
+                <div id="current-word"></div>
+                <button id="submit-word">Enviar</button>
+            </div>
             <div id="found-words"></div>
             <div id="score"></div>
-        </section>
-        <section id="ranking">
-            <h2>Ranking</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th onclick="sortRanking('name')">Nombre</th>
-                        <th onclick="sortRanking('score')">Puntaje</th>
-                        <th onclick="sortRanking('date')">Fecha</th>
-                    </tr>
-                </thead>
-                <tbody id="ranking-body">
-                    <!-- Aquí se mostrarán los resultados del ranking -->
-                </tbody>
-            </table>
+            <div id="feedback" style="display: none;"></div> <!-- Mensaje de feedback -->
         </section>
     </main>
     <div id="modal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close">&times;</span>
-            <p id="modal-message"></p>
+            <p id="ranking-content"></p>
         </div>
     </div>
     <script src="../js/script.js"></script>
