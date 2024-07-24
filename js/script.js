@@ -1,20 +1,20 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const startGameButton = document.getElementById('start-game');
+'use strict';
+
+// Lógica de inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    const startButton = document.getElementById('start-game');
     const playerNameInput = document.getElementById('player-name');
     const timeLimitSelect = document.getElementById('time-limit');
-    const gameSetupSection = document.getElementById('game-setup');
-    const gameBoardSection = document.getElementById('game-board');
-    const timerDisplay = document.getElementById('timer');
-    const board = document.getElementById('board');
+    const modal = document.getElementById('modal');
+    const span = document.getElementsByClassName('close')[0];
+    const welcomeMessage = document.getElementById('welcome-message');
+    const submitWordButton = document.getElementById('submit-word');
     const currentWordDisplay = document.getElementById('current-word');
     const foundWordsDisplay = document.getElementById('found-words');
     const scoreDisplay = document.getElementById('score');
+    const board = document.getElementById('board');
+    const messageDisplay = document.getElementById('feedback');
     const showRankingButton = document.getElementById('show-ranking');
-    const modal = document.getElementById('modal');
-    const closeModalButton = document.querySelector('.close');
-    const rankingContent = document.getElementById('ranking-content');
-    const submitWordButton = document.getElementById('submit-word');
-    const feedbackDisplay = document.getElementById('feedback');
 
     let timer;
     let timeLeft;
@@ -22,46 +22,171 @@ document.addEventListener('DOMContentLoaded', () => {
     let foundWords = [];
     let score = 0;
     let playerName = '';
-
     const boardSize = 4;
     let boardLetters = [];
     let selectedCells = [];
     let lastSelectedCell = null;
 
-    const wordsList = ['test', 'example', 'word']; // Lista de palabras válidas para el juego (placeholder)
+    playerNameInput.addEventListener('input', function() {
+        const playerName = playerNameInput.value.trim();
+        if (playerName.length >= 3) {
+            welcomeMessage.textContent = `¡Bienvenido ${playerName}, elige tu temporizador y comienza a jugar!`;
+        } else {
+            welcomeMessage.textContent = '¡Bienvenido, elige tu temporizador y comienza a jugar!';
+        }
+    });
 
-    startGameButton.addEventListener('click', () => {
+    startButton.addEventListener('click', function() {
         playerName = playerNameInput.value.trim();
-        if (playerName.length < 3) {
-            alert('El nombre debe tener al menos 3 letras.');
+        const timeLimit = parseInt(timeLimitSelect.value, 10);
+
+        if (playerName.length >= 3) {
+            startGame(playerName, timeLimit);
+        } else {
+            showModal('El nombre del jugador debe tener al menos 3 letras.');
+        }
+    });
+
+    span.onclick = function() {
+        modal.style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    submitWordButton.addEventListener('click', async function() {
+        if (currentWord.length < 3) {
+            messageDisplay.textContent = '¡Palabra demasiado corta!';
             return;
         }
 
-        const timeLimit = parseInt(timeLimitSelect.value, 10);
-        timeLeft = timeLimit * 60;
-        score = 0;
+        if (foundWords.includes(currentWord)) {
+            messageDisplay.textContent = '¡Palabra ya encontrada!';
+            return;
+        }
+
+        try {
+            const palabraEsValida = await verificarPalabra(currentWord);
+            if (palabraEsValida) {
+                foundWords.push(currentWord);
+                score += currentWord.length; // O cualquier lógica de puntuación que prefieras
+                messageDisplay.textContent = '¡Palabra correcta!';
+            } else {
+                score -= currentWord.length; // O cualquier lógica de penalización que prefieras
+                messageDisplay.textContent = '¡Palabra incorrecta!';
+            }
+        } catch (error) {
+            messageDisplay.textContent = 'Error al verificar la palabra.';
+        }
+
         currentWord = '';
-        foundWords = [];
-        boardLetters = generateBoard();
         selectedCells = [];
         lastSelectedCell = null;
-
-        gameSetupSection.style.display = 'none';
-        gameBoardSection.style.display = 'block';
-
         updateDisplay();
-        startTimer();
     });
 
+    showRankingButton.addEventListener('click', function() {
+        displayRanking();
+        modal.style.display = 'block';
+    });
+
+    function startGame(playerName, timeLimit) {
+        console.log('Iniciando juego para:', playerName, 'con tiempo:', timeLimit, 'minutos');
+        document.getElementById('game-setup').style.display = 'none';
+        document.getElementById('game-board').style.display = 'block';
+        boardLetters = generateBoard();
+        startTimer(timeLimit * 60);
+        updateDisplay();
+    }
+
+    function startTimer(duration) {
+        clearInterval(timer);
+        let timerDisplay = document.getElementById('timer');
+        timeLeft = duration;
+        timer = setInterval(function () {
+            let minutes = parseInt(timeLeft / 60, 10);
+            let seconds = parseInt(timeLeft % 60, 10);
+
+            minutes = minutes < 10 ? '0' + minutes : minutes;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+
+            timerDisplay.textContent = minutes + ':' + seconds;
+
+            if (timeLeft <= 10) {
+                timerDisplay.classList.add('warning');
+            } else {
+                timerDisplay.classList.remove('warning');
+            }
+
+            if (--timeLeft < 0) {
+                clearInterval(timer);
+                endGame();
+            }
+        }, 1000);
+    }
+
+    function endGame() {
+        console.log('El tiempo se ha acabado');
+        showModal('El tiempo se ha acabado. ¡Juego terminado!');
+        saveGameResult();
+    }
+
+    function saveGameResult() {
+        const gameResult = {
+            playerName,
+            score,
+            date: new Date().toLocaleString()
+        };
+
+        let gameResults = JSON.parse(localStorage.getItem('gameResults')) || [];
+        gameResults.push(gameResult);
+        localStorage.setItem('gameResults', JSON.stringify(gameResults));
+    }
+
+    function showModal(message) {
+        const modalMessage = document.getElementById('modal-message');
+        modalMessage.textContent = message;
+        modal.style.display = 'block';
+    }
+
+    function displayRanking() {
+        const rankingContent = document.getElementById('ranking-content');
+        let gameResults = JSON.parse(localStorage.getItem('gameResults')) || [];
+
+        if (gameResults.length === 0) {
+            rankingContent.innerHTML = 'No hay resultados de juego disponibles.';
+            return;
+        }
+
+        gameResults.sort((a, b) => b.score - a.score); // Ordenar por puntuación descendente
+        let rankingHTML = '<h2>Ranking</h2><ol>';
+
+        gameResults.forEach(result => {
+            rankingHTML += `<li>${result.playerName} - ${result.score} puntos (${result.date})</li>`;
+        });
+
+        rankingHTML += '</ol>';
+        rankingContent.innerHTML = rankingHTML;
+    }
+
     function generateBoard() {
-        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const vowels = 'AEIOU';
+        const consonants = 'BCDFGHJKLMNPQRSTVWXYZ';
         const boardLetters = [];
         board.innerHTML = '';
+
+        let lettersArray = Array(5).fill().map(() => vowels.charAt(Math.floor(Math.random() * vowels.length)))
+            .concat(Array(11).fill().map(() => consonants.charAt(Math.floor(Math.random() * consonants.length))));
+
+        lettersArray = lettersArray.sort(() => Math.random() - 0.5);
 
         for (let i = 0; i < boardSize; i++) {
             boardLetters[i] = [];
             for (let j = 0; j < boardSize; j++) {
-                const letter = letters.charAt(Math.floor(Math.random() * letters.length));
+                const letter = lettersArray.pop();
                 boardLetters[i].push(letter);
 
                 const cell = document.createElement('div');
@@ -73,6 +198,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         return boardLetters;
+    }
+
+    async function verificarPalabra(word) {
+        const response = await fetch(`https://api.datamuse.com/words?sp=${word}`);
+        const data = await response.json();
+        return data.length > 0;
     }
 
     function handleCellClick(event) {
@@ -102,7 +233,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateDisplay() {
-        // Actualiza el tablero
         const cells = board.querySelectorAll('div');
         cells.forEach(cell => {
             const row = parseInt(cell.dataset.row, 10);
@@ -116,145 +246,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (lastSelectedCell && lastSelectedCell.row === row && lastSelectedCell.col === col) {
                 cell.classList.add('last-selected');
             }
-
-            if (!selectedCells.some(c => c.row === row && c.col === col) && isContiguous(lastSelectedCell || {}, { row, col })) {
-                cell.classList.add('next-selectable');
-            }
         });
 
-        currentWordDisplay.textContent = `Palabra actual: ${currentWord}`;
-        foundWordsDisplay.innerHTML = `Palabras encontradas: ${foundWords.join(', ')}`;
+        currentWordDisplay.textContent = currentWord;
+        foundWordsDisplay.textContent = foundWords.join(', ');
         scoreDisplay.textContent = `Puntuación: ${score}`;
-    }
-
-    function startTimer() {
-        clearInterval(timer);
-        timer = setInterval(() => {
-            timeLeft--;
-            updateTimerDisplay();
-
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                endGame();
-            }
-        }, 1000);
-    }
-
-    function updateTimerDisplay() {
-        timerDisplay.textContent = `Tiempo restante: ${Math.floor(timeLeft / 60)}:${timeLeft % 60 < 10 ? '0' : ''}${timeLeft % 60}`;
-
-        if (timeLeft <= 10) {
-            timerDisplay.classList.add('warning');
-        } else {
-            timerDisplay.classList.remove('warning');
-        }
-    }
-
-    function endGame() {
-        alert('¡Se acabó el tiempo!');
-        saveGameResult();
-        resetGame();
-    }
-
-    function saveGameResult() {
-        const gameResult = {
-            playerName,
-            score,
-            date: new Date().toLocaleString()
-        };
-
-        let gameResults = JSON.parse(localStorage.getItem('gameResults')) || [];
-        gameResults.push(gameResult);
-        localStorage.setItem('gameResults', JSON.stringify(gameResults));
-    }
-
-    function resetGame() {
-        gameSetupSection.style.display = 'block';
-        gameBoardSection.style.display = 'none';
-        currentWord = '';
-        foundWords = [];
-        selectedCells = [];
-        lastSelectedCell = null;
-        playerNameInput.value = '';
-        timeLimitSelect.value = '1';
-        timerDisplay.classList.remove('warning');
-        updateDisplay();
-    }
-
-    showRankingButton.addEventListener('click', () => {
-        displayRanking();
-        modal.style.display = 'block';
-    });
-
-    closeModalButton.addEventListener('click', () => {
-        modal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-        }
-    });
-
-    submitWordButton.addEventListener('click', () => {
-        if (currentWord.length < 3) {
-            displayFeedback('¡La palabra debe tener al menos 3 letras!', 'incorrect');
-            return;
-        }
-
-        if (foundWords.includes(currentWord)) {
-            displayFeedback('¡Ya has encontrado esta palabra!', 'incorrect');
-            return;
-        }
-
-        if (wordsList.includes(currentWord.toLowerCase())) {
-            const wordScore = currentWord.length; // Ejemplo de puntuación basada en la longitud de la palabra
-            score += wordScore;
-            foundWords.push(currentWord);
-            displayFeedback('¡Palabra correcta!', 'correct');
-        } else {
-            displayFeedback('¡Palabra incorrecta!', 'incorrect');
-        }
-
-        currentWord = '';
-        selectedCells = [];
-        lastSelectedCell = null;
-        updateDisplay();
-    });
-
-    function displayFeedback(message, type) {
-        feedbackDisplay.textContent = message;
-        feedbackDisplay.style.color = type === 'correct' ? 'green' : 'red';
-        feedbackDisplay.style.display = 'block';
-
-        setTimeout(() => {
-            feedbackDisplay.style.display = 'none';
-        }, 2000); // Oculta el mensaje después de 2 segundos
-    }
-
-    function displayRanking() {
-        const gameResults = JSON.parse(localStorage.getItem('gameResults')) || [];
-        gameResults.sort((a, b) => b.score - a.score);
-
-        rankingContent.innerHTML = `
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Puntuación</th>
-                        <th>Fecha</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${gameResults.map(result => `
-                        <tr>
-                            <td>${result.playerName}</td>
-                            <td>${result.score}</td>
-                            <td>${result.date}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        `;
     }
 });

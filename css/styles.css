@@ -1,6 +1,6 @@
 /* Estilos básicos */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -12,36 +12,29 @@ header {
     text-align: center;
 }
 
+header h1 {
+    margin: 0;
+    font-size: 2em; /* Tamaño del título */
+}
+
+header nav {
+    margin-top: 10px; /* Espacio debajo del título */
+}
+
 header nav a {
     color: #fff;
     margin: 0 1em;
     text-decoration: none;
 }
 
-/* Estilos generales para la configuración del juego */
-#game-setup {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh; /* Altura de la ventana */
-    padding: 20px;
+header nav a:hover {
+    text-decoration: underline;
 }
 
-#game-setup h2 {
-    margin-top: 0; /* Elimina el margen superior del subtítulo */
-    margin-bottom: 15px; /* Espacio debajo del subtítulo */
-}
-
-/* Estilos para los elementos del formulario */
-#game-setup label {
-    margin-bottom: 5px;
-    display: block; /* Asegura que el label ocupe toda la línea */
-    text-align: center; /* Centra el texto del label */
-}
-
-#game-setup input,
-#game-setup select {
+/* Estilos generales para formularios */
+input,
+select,
+textarea {
     margin-bottom: 15px; /* Espacio entre los elementos del formulario */
     width: 100%; /* Ancho completo del contenedor */
     max-width: 500px; /* Ancho máximo del formulario */
@@ -49,7 +42,7 @@ header nav a {
     box-sizing: border-box; /* Incluye el padding en el cálculo del ancho */
 }
 
-#game-setup button {
+button {
     background-color: orange;
     color: white;
     font-family: 'Comic Sans MS', cursive, sans-serif;
@@ -60,27 +53,29 @@ header nav a {
     max-width: 500px; /* Ancho máximo del botón */
 }
 
-#game-setup button:hover {
-    background-color: darkorange;
-}
-
-/* Estilos generales */
-body, input, button, textarea, select {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-}
-
-/* Estilos para los botones */
-button {
-    background-color: orange;
-    color: white;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-}
-
 button:hover {
     background-color: darkorange;
+}
+
+/* Estilos específicos para la configuración del juego */
+#game-setup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Altura de la ventana */
+    padding: 20px;
+}
+
+#game-setup h2 {
+    margin: 0 0 15px 0; /* Ajuste del margen */
+    text-align: center;
+}
+
+#game-setup label {
+    margin-bottom: 5px;
+    display: block;
+    text-align: center;
 }
 
 /* Estilos del modal */
@@ -93,7 +88,6 @@ button:hover {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgb(0,0,0);
     background-color: rgba(0,0,0,0.4);
 }
 
@@ -119,87 +113,57 @@ button:hover {
     cursor: pointer;
 }
 
-/* Estilos generales para el formulario de contacto */
-#contact-form {
+/* Estilos para el tablero de juego */
+#board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    gap: 5px;
+    width: 100%;
+    max-width: 400px; /* Ajustar el tamaño del tablero para que quepa en pantalla */
+    margin: 0 auto; /* Centra el tablero en la pantalla */
+}
+
+#board div {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh; /* Altura de la ventana */
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    font-size: 1.2em;
+    cursor: pointer;
+    height: 60px;
+}
+
+/* Colores para las letras seleccionadas y el borde */
+.selected {
+    background-color: orange;
+    color: white;
+}
+
+.last-selected {
+    border: 2px solid red;
+}
+
+/* Colores para las letras que pueden ser seleccionadas */
+.next-selectable {
+    background-color: lightgreen;
+}
+
+/* Estilos para el ranking */
+#ranking {
     padding: 20px;
 }
 
-/* Estilos para el título principal */
-header h1 {
-    margin-bottom: 10px; /* Espacio debajo del título principal */
+#ranking h2 {
+    margin-top: 0;
 }
 
-/* Estilos para el subtítulo del formulario */
-#contact-form h2 {
-    margin-top: 0; /* Elimina el margen superior del subtítulo */
-    margin-bottom: 5px; /* Espacio debajo del subtítulo */
+#ranking ul {
+    list-style-type: none;
+    padding: 0;
 }
 
-/* Estilos para los elementos del formulario */
-#contact-form label {
-    margin-bottom: 5px;
-    display: block; /* Asegura que el label ocupe toda la línea */
-    text-align: center; /* Centra el texto del label */
-}
-
-#contact-form input,
-#contact-form textarea {
-    margin-bottom: 15px; /* Espacio entre los elementos del formulario */
-    width: 100%; /* Ancho completo del contenedor */
-    max-width: 500px; /* Ancho máximo del formulario */
-    padding: 10px;
-    box-sizing: border-box; /* Incluye el padding en el cálculo del ancho */
-}
-
-#contact-form textarea {
-    height: 100px; /* Altura del área de texto */
-}
-
-#contact-form button {
-    background-color: orange;
-    color: white;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    width: 100%; /* Ancho completo del contenedor */
-    max-width: 500px; /* Ancho máximo del botón */
-}
-
-#contact-form button:hover {
-    background-color: darkorange;
-}
-
-/* Estilos para el contenedor de la palabra actual y el botón Enviar */
-#current-word-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 1em 0;
-}
-
-#submit-word {
-    background-color: orange;
-    color: white;
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    margin-left: 10px;
-}
-
-#submit-word:hover {
-    background-color: darkorange;
-}
-
-/* Estilos para el mensaje de feedback */
-#feedback {
-    font-size: 1.5em;
-    margin: 1em 0;
-    text-align: center;
+#ranking li {
+    padding: 5px 0;
 }
