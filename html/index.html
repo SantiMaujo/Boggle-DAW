@@ -17,14 +17,17 @@
     <main>
         <section id="game-setup">
             <h2 id="welcome-message">¡Bienvenido, elige tu temporizador y comienza a jugar!</h2>
+            
             <label for="player-name">Nombre del jugador:</label>
             <input type="text" id="player-name" maxlength="20">
+            
             <label for="time-limit">Límite de tiempo:</label>
             <select id="time-limit">
                 <option value="1">1 minuto</option>
                 <option value="2">2 minutos</option>
                 <option value="3">3 minutos</option>
             </select>
+            
             <button id="start-game">Iniciar Juego</button>
         </section>
         <section id="game-board" style="display:none;">
@@ -33,11 +36,10 @@
                 <!-- Aquí se generará el tablero de 4x4 -->
             </div>
             <div id="current-word-container">
-                <div id="current-word"></div>
+                <div id="current-word">Palabra actual</div>
                 <button id="submit-word">Enviar</button>
             </div>
-            <div id="found-words"></div>
-            <div id="score"></div>
+            <div id="score">Puntuación: 0</div>
             <div id="feedback"></div>
         </section>
     </main>
