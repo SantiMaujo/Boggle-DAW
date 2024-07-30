@@ -107,30 +107,30 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('game-setup').style.display = 'none';
         document.getElementById('game-board').style.display = 'block';
         boardLetters = generateBoard();
-        startTimer(timeLimit * 60);
         gameActive = true;
+        startTimer(timeLimit * 60);
         score = 0;
         foundWords = [];
         updateDisplay();
     }
 
-    function startTimer(duration) {
-        clearInterval(timer);
+   function startTimer(duration) {
+        clearInterval(timer);  // Detiene cualquier temporizador existente
         let timerDisplay = document.getElementById('timer');
-        timeLeft = duration;
-        updateTimerDisplay();
-
+        timeLeft = duration;  // Inicializa el tiempo restante
+        updateTimerDisplay();  // Muestra el tiempo inicial
+    
         timer = setInterval(function () {
-            timeLeft--;
-            updateTimerDisplay();
-
+            timeLeft--;  // Decrementa el tiempo restante
+            updateTimerDisplay();  // Actualiza la visualización del temporizador
+    
             if (timeLeft <= 0) {
-                clearInterval(timer);
-                endGame();
+                clearInterval(timer);  // Detiene el temporizador
+                endGame();  // Finaliza el juego
             }
-        }, 1000);
+        }, 1000);  // Ejecuta cada segundo
     }
-
+        
     function updateTimerDisplay() {
         let timerDisplay = document.getElementById('timer');
         let minutes = Math.floor(timeLeft / 60);
@@ -149,10 +149,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function endGame() {
-        console.log('El tiempo se ha acabado');
+        gameActive = false;  // Desactiva el juego para que no se pueda seguir jugando
+        clearInterval(timer); 
         showModal('El tiempo se ha acabado. ¡Juego terminado!');
-        saveGameResult();
-        gameActive = false;
+        saveGameResult(); 
     }
 
     function saveGameResult() {
