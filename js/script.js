@@ -1,6 +1,5 @@
 'use strict';
 
-// Lógica de inicialización
 document.addEventListener('DOMContentLoaded', function() {
     const startButton = document.getElementById('start-game');
     const playerNameInput = document.getElementById('player-name');
@@ -9,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const span = document.getElementsByClassName('close')[0];
     const welcomeMessage = document.getElementById('welcome-message');
     const submitWordButton = document.getElementById('submit-word');
+    const clearWordButton = document.getElementById('clear-word');
     const currentWordDisplay = document.getElementById('current-word');
     const foundWordsDisplay = document.getElementById('found-words');
     const scoreDisplay = document.getElementById('score');
@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let boardLetters = [];
     let selectedCells = [];
     let lastSelectedCell = null;
+    let gameActive = false;
 
     playerNameInput.addEventListener('input', function() {
         const playerName = playerNameInput.value.trim();
@@ -58,6 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     submitWordButton.addEventListener('click', async function() {
+        if (!gameActive) return;
         if (currentWord.length < 3) {
             messageDisplay.textContent = '¡Palabra demasiado corta!';
             return;
@@ -72,10 +74,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const palabraEsValida = await verificarPalabra(currentWord);
             if (palabraEsValida) {
                 foundWords.push(currentWord);
-                score += currentWord.length; // O cualquier lógica de puntuación que prefieras
+                score += currentWord.length;
                 messageDisplay.textContent = '¡Palabra correcta!';
             } else {
-                score -= currentWord.length; // O cualquier lógica de penalización que prefieras
+                score = Math.max(0, score - currentWord.length);
                 messageDisplay.textContent = '¡Palabra incorrecta!';
             }
         } catch (error) {
@@ -93,45 +95,64 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.style.display = 'block';
     });
 
+    clearWordButton.addEventListener('click', () => {
+        currentWord = '';
+        selectedCells = [];
+        lastSelectedCell = null;
+        updateDisplay();
+    });
+
     function startGame(playerName, timeLimit) {
         console.log('Iniciando juego para:', playerName, 'con tiempo:', timeLimit, 'minutos');
         document.getElementById('game-setup').style.display = 'none';
         document.getElementById('game-board').style.display = 'block';
         boardLetters = generateBoard();
+        gameActive = true;
         startTimer(timeLimit * 60);
+        score = 0;
+        foundWords = [];
         updateDisplay();
     }
 
-    function startTimer(duration) {
-        clearInterval(timer);
+   function startTimer(duration) {
+        clearInterval(timer);  // Detiene cualquier temporizador existente
         let timerDisplay = document.getElementById('timer');
-        timeLeft = duration;
+        timeLeft = duration;  // Inicializa el tiempo restante
+        updateTimerDisplay();  // Muestra el tiempo inicial
+    
         timer = setInterval(function () {
-            let minutes = parseInt(timeLeft / 60, 10);
-            let seconds = parseInt(timeLeft % 60, 10);
-
-            minutes = minutes < 10 ? '0' + minutes : minutes;
-            seconds = seconds < 10 ? '0' + seconds : seconds;
-
-            timerDisplay.textContent = minutes + ':' + seconds;
-
-            if (timeLeft <= 10) {
-                timerDisplay.classList.add('warning');
-            } else {
-                timerDisplay.classList.remove('warning');
+            timeLeft--;  // Decrementa el tiempo restante
+            updateTimerDisplay();  // Actualiza la visualización del temporizador
+    
+            if (timeLeft <= 0) {
+                clearInterval(timer);  // Detiene el temporizador
+                endGame();  // Finaliza el juego
             }
+        }, 1000);  // Ejecuta cada segundo
+    }
+        
+    function updateTimerDisplay() {
+        let timerDisplay = document.getElementById('timer');
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
 
-            if (--timeLeft < 0) {
-                clearInterval(timer);
-                endGame();
-            }
-        }, 1000);
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+
+        timerDisplay.textContent = minutes + ':' + seconds;
+
+        if (timeLeft <= 10) {
+            timerDisplay.classList.add('warning');
+        } else {
+            timerDisplay.classList.remove('warning');
+        }
     }
 
     function endGame() {
-        console.log('El tiempo se ha acabado');
+        gameActive = false;  // Desactiva el juego para que no se pueda seguir jugando
+        clearInterval(timer); 
         showModal('El tiempo se ha acabado. ¡Juego terminado!');
-        saveGameResult();
+        saveGameResult(); 
     }
 
     function saveGameResult() {
@@ -161,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        gameResults.sort((a, b) => b.score - a.score); // Ordenar por puntuación descendente
+        gameResults.sort((a, b) => b.score - a.score);
         let rankingHTML = '<h2>Ranking</h2><ol>';
 
         gameResults.forEach(result => {
@@ -207,16 +228,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function handleCellClick(event) {
+        if (!gameActive) return;
+
         const cell = event.target;
         const row = parseInt(cell.dataset.row, 10);
         const col = parseInt(cell.dataset.col, 10);
 
         if (selectedCells.some(c => c.row === row && c.col === col)) {
-            return; // Ya está seleccionada
+            return;
         }
 
         if (lastSelectedCell && !isContiguous(lastSelectedCell, { row, col })) {
-            return; // No es contigua a la última seleccionada
+            return;
         }
 
         selectedCells.push({ row, col });
@@ -249,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         currentWordDisplay.textContent = currentWord;
-        foundWordsDisplay.textContent = foundWords.join(', ');
-        scoreDisplay.textContent = `Puntuación: ${score}`;
+        scoreDisplay.textContent = 'Puntuación: ' + score;
+        foundWordsDisplay.textContent = 'Palabras encontradas: ' + foundWords.join(', ');
     }
 });
