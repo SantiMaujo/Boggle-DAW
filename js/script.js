@@ -105,8 +105,11 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     endGameButton.addEventListener('click', function() {
-        endGame();  // Finaliza el juego y vuelve al menú principal
+        document.getElementById('game-setup').style.display = 'block';  // Muestra el menú de configuración
+        endGameSection.style.display = 'none';  // Oculta la sección de finalizar juego
+        document.getElementById('game-board').style.display = 'none';  // Oculta el tablero
     });
+    
 
     function startGame(playerName, timeLimit) {
         console.log('Iniciando juego para:', playerName, 'con tiempo:', timeLimit, 'minutos');
