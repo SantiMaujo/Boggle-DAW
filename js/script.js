@@ -105,10 +105,37 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     endGameButton.addEventListener('click', function() {
-        document.getElementById('game-setup').style.display = 'block';  // Muestra el menú de configuración
-        endGameSection.style.display = 'none';  // Oculta la sección de finalizar juego
-        document.getElementById('game-board').style.display = 'none';  // Oculta el tablero
+        // Ocultar la sección de finalización del juego
+        endGameSection.style.display = 'none';
+        
+        // Ocultar el tablero de juego
+        document.getElementById('game-board').style.display = 'none';
+        
+        // Mostrar el menú de configuración
+        document.getElementById('game-setup').style.display = 'block';
+    
+        // Recargar el HTML del menú de configuración
+        loadGameSetup();
     });
+    
+    function loadGameSetup() {
+        const gameSetupSection = document.getElementById('game-setup');
+        
+        // Usar fetch para cargar el HTML desde un archivo
+        fetch('../index.html')
+            .then(response => response.text())
+            .then(html => {
+                // Extraer el contenido de la sección de configuración
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newGameSetupHTML = doc.getElementById('game-setup').innerHTML;
+                gameSetupSection.innerHTML = newGameSetupHTML;
+            })
+            .catch(error => {
+                console.error('Error al cargar el HTML del menú:', error);
+            });
+    }
+    
     
 
     function startGame(playerName, timeLimit) {
@@ -160,13 +187,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function endGame() {
-        console.log('El tiempo se ha acabado. ¡Juego terminado!');  // Mensaje de depuración
         gameActive = false;  // Desactiva el juego para que no se pueda seguir jugando
-        showModal('El tiempo se ha acabado. ¡Juego terminado!');
+        // Crea el mensaje adicional
+        const finalMessage = `El tiempo se ha acabado. ¡Juego terminado! Has hecho ${score} puntos. Muy bien! Gracias por jugar!`;
+        // Muestra el modal con el mensaje final y el mensaje de puntuación
+        showModal(finalMessage); 
         saveGameResult();
         document.getElementById('game-board').style.display = 'none';  // Oculta el tablero
         endGameSection.style.display = 'block';  // Muestra el botón de finalizar juego
     }
+    
+    function showModal(message) {
+        const modalMessage = document.getElementById('modal-message');
+        modalMessage.textContent = message;
+        modal.style.display = 'block';
+    }
+    
 
     function saveGameResult() {
         const gameResult = {
