@@ -93,8 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     showRankingButton.addEventListener('click', function() {
-        displayRanking();
-        modal.style.display = 'block';
+        showModal('', true);  // True indica que se debe mostrar el ranking
     });
 
     clearWordButton.addEventListener('click', () => {
@@ -136,8 +135,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
     
-    
-
     function startGame(playerName, timeLimit) {
         console.log('Iniciando juego para:', playerName, 'con tiempo:', timeLimit, 'minutos');
         document.getElementById('game-setup').style.display = 'none';
@@ -196,13 +193,17 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('game-board').style.display = 'none';  // Oculta el tablero
         endGameSection.style.display = 'block';  // Muestra el botón de finalizar juego
     }
-    
-    function showModal(message) {
+
+    function showModal(message, isRanking = false) {
         const modalMessage = document.getElementById('modal-message');
-        modalMessage.textContent = message;
+        if (isRanking) {
+            displayRanking();
+            modalMessage.innerHTML = '';  // Limpia el mensaje de la modal
+        } else {
+            modalMessage.textContent = message;
+        }
         modal.style.display = 'block';
     }
-    
 
     function saveGameResult() {
         const gameResult = {
@@ -214,16 +215,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let gameResults = JSON.parse(localStorage.getItem('gameResults')) || [];
         gameResults.push(gameResult);
         localStorage.setItem('gameResults', JSON.stringify(gameResults));
-    }
-
-    function showModal(message) {
-        const modalMessage = document.getElementById('modal-message');
-        if (modalMessage) {
-            modalMessage.textContent = message;
-            modal.style.display = 'block';
-        } else {
-            console.error('Elemento con id "modal-message" no encontrado.');
-        }
     }
 
     function displayRanking() {
