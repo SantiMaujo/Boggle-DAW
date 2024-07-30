@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const board = document.getElementById('board');
     const messageDisplay = document.getElementById('feedback');
     const showRankingButton = document.getElementById('show-ranking');
+    const endGameButton = document.getElementById('end-game-button');
+    const endGameSection = document.getElementById('end-game-section');
 
     let timer;
     let timeLeft;
@@ -102,10 +104,15 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDisplay();
     });
 
+    endGameButton.addEventListener('click', function() {
+        endGame();  // Finaliza el juego y vuelve al menú principal
+    });
+
     function startGame(playerName, timeLimit) {
         console.log('Iniciando juego para:', playerName, 'con tiempo:', timeLimit, 'minutos');
         document.getElementById('game-setup').style.display = 'none';
         document.getElementById('game-board').style.display = 'block';
+        endGameSection.style.display = 'none';  // Oculta la sección de finalizar juego
         boardLetters = generateBoard();
         gameActive = true;
         startTimer(timeLimit * 60);
@@ -114,23 +121,24 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDisplay();
     }
 
-   function startTimer(duration) {
+    function startTimer(duration) {
         clearInterval(timer);  // Detiene cualquier temporizador existente
         let timerDisplay = document.getElementById('timer');
         timeLeft = duration;  // Inicializa el tiempo restante
         updateTimerDisplay();  // Muestra el tiempo inicial
-    
+
         timer = setInterval(function () {
-            timeLeft--;  // Decrementa el tiempo restante
-            updateTimerDisplay();  // Actualiza la visualización del temporizador
-    
-            if (timeLeft <= 0) {
-                clearInterval(timer);  // Detiene el temporizador
+            if (timeLeft > 0) {
+                timeLeft--;  // Decrementa el tiempo restante
+                updateTimerDisplay();  // Actualiza la visualización del temporizador
+            } else {
+                console.log('El temporizador ha llegado a cero.');  // Mensaje de depuración
+                clearInterval(timer);
                 endGame();  // Finaliza el juego
             }
         }, 1000);  // Ejecuta cada segundo
     }
-        
+
     function updateTimerDisplay() {
         let timerDisplay = document.getElementById('timer');
         let minutes = Math.floor(timeLeft / 60);
@@ -149,10 +157,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function endGame() {
+        console.log('El tiempo se ha acabado. ¡Juego terminado!');  // Mensaje de depuración
         gameActive = false;  // Desactiva el juego para que no se pueda seguir jugando
-        clearInterval(timer); 
         showModal('El tiempo se ha acabado. ¡Juego terminado!');
-        saveGameResult(); 
+        saveGameResult();
+        document.getElementById('game-board').style.display = 'none';  // Oculta el tablero
+        endGameSection.style.display = 'block';  // Muestra el botón de finalizar juego
     }
 
     function saveGameResult() {
@@ -169,8 +179,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showModal(message) {
         const modalMessage = document.getElementById('modal-message');
-        modalMessage.textContent = message;
-        modal.style.display = 'block';
+        if (modalMessage) {
+            modalMessage.textContent = message;
+            modal.style.display = 'block';
+        } else {
+            console.error('Elemento con id "modal-message" no encontrado.');
+        }
     }
 
     function displayRanking() {
@@ -243,36 +257,30 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         selectedCells.push({ row, col });
-        lastSelectedCell = { row, col };
         currentWord += boardLetters[row][col];
+        lastSelectedCell = { row, col };
 
+        cell.classList.add('selected');
         updateDisplay();
     }
 
     function isContiguous(cell1, cell2) {
-        const rowDiff = Math.abs(cell1.row - cell2.row);
-        const colDiff = Math.abs(cell1.col - cell2.col);
-        return rowDiff <= 1 && colDiff <= 1;
+        const deltaRow = Math.abs(cell1.row - cell2.row);
+        const deltaCol = Math.abs(cell1.col - cell2.col);
+        return deltaRow <= 1 && deltaCol <= 1 && (deltaRow + deltaCol > 0);
     }
 
     function updateDisplay() {
-        const cells = board.querySelectorAll('div');
-        cells.forEach(cell => {
-            const row = parseInt(cell.dataset.row, 10);
-            const col = parseInt(cell.dataset.col, 10);
-            cell.classList.remove('selected', 'last-selected', 'next-selectable');
-
-            if (selectedCells.some(c => c.row === row && c.col === col)) {
-                cell.classList.add('selected');
-            }
-
-            if (lastSelectedCell && lastSelectedCell.row === row && lastSelectedCell.col === col) {
-                cell.classList.add('last-selected');
-            }
-        });
-
         currentWordDisplay.textContent = currentWord;
-        scoreDisplay.textContent = 'Puntuación: ' + score;
-        foundWordsDisplay.textContent = 'Palabras encontradas: ' + foundWords.join(', ');
+        foundWordsDisplay.innerHTML = foundWords.join('<br>');
+        scoreDisplay.textContent = `Puntuación: ${score}`;
+
+        const cells = board.getElementsByClassName('selected');
+        Array.from(cells).forEach(cell => cell.classList.remove('selected'));
+
+        selectedCells.forEach(cell => {
+            const cellElement = board.querySelector(`[data-row="${cell.row}"][data-col="${cell.col}"]`);
+            cellElement.classList.add('selected');
+        });
     }
 });

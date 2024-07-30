@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boggle</title>
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <header>
         <h1>Boggle</h1>
         <nav>
-            <a href="../html/contacto.html">Contacto</a>
+            <a href="html/contacto.html">Contacto</a>
             <a href="#" id="show-ranking">Ver Ranking</a>
         </nav>
     </header>
@@ -42,14 +42,19 @@
             </div>
             <div id="score">Puntuación: 0</div>
             <div id="feedback"></div>
+            <div id="found-words">Palabras encontradas:</div>
+        </section>
+        <section id="end-game-section" style="display: none;">
+            <button id="end-game-button">Volver al Menú Principal</button>
         </section>
     </main>
     <div id="modal" class="modal" style="display: none;">
         <div class="modal-content">
             <span class="close">&times;</span>
+            <p id="modal-message"></p> <!-- Añadido aquí -->
             <div id="ranking-content"></div>
         </div>
-    </div>
-    <script src="../js/script.js"></script>
+    </div>    
+    <script src="js/script.js"></script>
 </body>
 </html>
