@@ -292,12 +292,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
         cell.classList.add('selected');
         updateDisplay();
+        updateSelectableCells(); // Añade esta línea para actualizar las celdas seleccionables
     }
 
     function isContiguous(cell1, cell2) {
         const deltaRow = Math.abs(cell1.row - cell2.row);
         const deltaCol = Math.abs(cell1.col - cell2.col);
         return deltaRow <= 1 && deltaCol <= 1 && (deltaRow + deltaCol > 0);
+    }
+
+    function updateSelectableCells() {
+        // Limpia las celdas seleccionables previas
+        const cells = board.getElementsByClassName('next-selectable');
+        Array.from(cells).forEach(cell => cell.classList.remove('next-selectable'));
+
+        if (lastSelectedCell) {
+            const directions = [
+                { row: -1, col: -1 }, { row: -1, col: 0 }, { row: -1, col: 1 },
+                { row: 0, col: -1 },                   { row: 0, col: 1 },
+                { row: 1, col: -1 }, { row: 1, col: 0 }, { row: 1, col: 1 }
+            ];
+
+            directions.forEach(direction => {
+                const newRow = lastSelectedCell.row + direction.row;
+                const newCol = lastSelectedCell.col + direction.col;
+                if (newRow >= 0 && newRow < boardSize && newCol >= 0 && newCol < boardSize) {
+                    const cell = board.querySelector(`[data-row="${newRow}"][data-col="${newCol}"]`);
+                    if (cell && !selectedCells.some(c => c.row === newRow && c.col === newCol)) {
+                        cell.classList.add('next-selectable');
+                    }
+                }
+            });
+        }
     }
 
     function updateDisplay() {
@@ -312,5 +338,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const cellElement = board.querySelector(`[data-row="${cell.row}"][data-col="${cell.col}"]`);
             cellElement.classList.add('selected');
         });
+
+        updateSelectableCells(); 
     }
 });

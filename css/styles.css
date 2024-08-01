@@ -176,8 +176,8 @@ button:hover {
 
 /* Colores para las letras seleccionadas y el borde */
 .selected {
-    background-color: orange;
-    color: white;
+    background-color: orangered;
+    color: yellow;
 }
 
 .last-selected {
@@ -186,7 +186,7 @@ button:hover {
 
 /* Colores para las letras que pueden ser seleccionadas */
 .next-selectable {
-    background-color: lightgreen;
+    color: orange
 }
 
 /* Estilos para el ranking */
