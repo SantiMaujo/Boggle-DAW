@@ -5,8 +5,9 @@ Este es un proyecto del juego Boggle implementado con HTML, CSS y JavaScript.
 ## Estructura del Proyecto
 
 - **css/**: Contiene los archivos de estilo.
-- **html/**: Contiene los archivos HTML.
 - **js/**: Contiene los archivos JavaScript.
+- **index.html**: Página principal.
+- **contacto.html**: Página de contacto.
 
 ## Reglas del Juego
 
@@ -26,6 +27,7 @@ Visita la página de [Contacto](html/contact.html) para más información.
 ## Repositorio
 
 Puedes encontrar el código fuente del proyecto en [GitHub](https://github.com/SantiMaujo/Boggle-DAW).
+también aquí esta el link de GitHub Pages: https://santimaujo.github.io/Boggle-DAW/
 
 ## Licencia
 
