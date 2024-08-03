@@ -118,21 +118,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     function loadGameSetup() {
-        const gameSetupSection = document.getElementById('game-setup');
-        
-        // Usar fetch para cargar el HTML desde un archivo
-        fetch('../index.html')
-            .then(response => response.text())
-            .then(html => {
-                // Extraer el contenido de la sección de configuración
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-                const newGameSetupHTML = doc.getElementById('game-setup').innerHTML;
-                gameSetupSection.innerHTML = newGameSetupHTML;
-            })
-            .catch(error => {
-                console.error('Error al cargar el HTML del menú:', error);
-            });
+        document.getElementById('game-setup').style.display = 'block';
+        document.getElementById('game-board').style.display = 'none';
     }
     
     function startGame(playerName, timeLimit) {
