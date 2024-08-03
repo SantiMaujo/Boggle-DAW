@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const board = document.getElementById('board');
     const messageDisplay = document.getElementById('feedback');
     const showRankingButton = document.getElementById('show-ranking');
+    const endGameButton = document.getElementById('end-game-button');
+    const endGameSection = document.getElementById('end-game-section');
 
     let timer;
     let timeLeft;
@@ -91,8 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     showRankingButton.addEventListener('click', function() {
-        displayRanking();
-        modal.style.display = 'block';
+        showModal('', true);  // True indica que se debe mostrar el ranking
     });
 
     clearWordButton.addEventListener('click', () => {
@@ -102,10 +103,30 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDisplay();
     });
 
+    endGameButton.addEventListener('click', function() {
+        // Ocultar la sección de finalización del juego
+        endGameSection.style.display = 'none';
+        
+        // Ocultar el tablero de juego
+        document.getElementById('game-board').style.display = 'none';
+        
+        // Mostrar el menú de configuración
+        document.getElementById('game-setup').style.display = 'block';
+    
+        // Recargar el HTML del menú de configuración
+        loadGameSetup();
+    });
+    
+    function loadGameSetup() {
+        document.getElementById('game-setup').style.display = 'block';
+        document.getElementById('game-board').style.display = 'none';
+    }
+    
     function startGame(playerName, timeLimit) {
         console.log('Iniciando juego para:', playerName, 'con tiempo:', timeLimit, 'minutos');
         document.getElementById('game-setup').style.display = 'none';
         document.getElementById('game-board').style.display = 'block';
+        endGameSection.style.display = 'none';  // Oculta la sección de finalizar juego
         boardLetters = generateBoard();
         gameActive = true;
         startTimer(timeLimit * 60);
@@ -114,23 +135,24 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDisplay();
     }
 
-   function startTimer(duration) {
+    function startTimer(duration) {
         clearInterval(timer);  // Detiene cualquier temporizador existente
         let timerDisplay = document.getElementById('timer');
         timeLeft = duration;  // Inicializa el tiempo restante
         updateTimerDisplay();  // Muestra el tiempo inicial
-    
+
         timer = setInterval(function () {
-            timeLeft--;  // Decrementa el tiempo restante
-            updateTimerDisplay();  // Actualiza la visualización del temporizador
-    
-            if (timeLeft <= 0) {
-                clearInterval(timer);  // Detiene el temporizador
+            if (timeLeft > 0) {
+                timeLeft--;  // Decrementa el tiempo restante
+                updateTimerDisplay();  // Actualiza la visualización del temporizador
+            } else {
+                console.log('El temporizador ha llegado a cero.');  // Mensaje de depuración
+                clearInterval(timer);
                 endGame();  // Finaliza el juego
             }
         }, 1000);  // Ejecuta cada segundo
     }
-        
+
     function updateTimerDisplay() {
         let timerDisplay = document.getElementById('timer');
         let minutes = Math.floor(timeLeft / 60);
@@ -150,9 +172,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function endGame() {
         gameActive = false;  // Desactiva el juego para que no se pueda seguir jugando
-        clearInterval(timer); 
-        showModal('El tiempo se ha acabado. ¡Juego terminado!');
-        saveGameResult(); 
+        // Crea el mensaje adicional
+        const finalMessage = `El tiempo se ha acabado. ¡Juego terminado! Has hecho ${score} puntos. Muy bien! Gracias por jugar!`;
+        // Muestra el modal con el mensaje final y el mensaje de puntuación
+        showModal(finalMessage); 
+        saveGameResult();
+        document.getElementById('game-board').style.display = 'none';  // Oculta el tablero
+        endGameSection.style.display = 'block';  // Muestra el botón de finalizar juego
+    }
+
+    function showModal(message, isRanking = false) {
+        const modalMessage = document.getElementById('modal-message');
+        if (isRanking) {
+            displayRanking();
+            modalMessage.innerHTML = '';  // Limpia el mensaje de la modal
+        } else {
+            modalMessage.textContent = message;
+        }
+        modal.style.display = 'block';
     }
 
     function saveGameResult() {
@@ -165,12 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
         let gameResults = JSON.parse(localStorage.getItem('gameResults')) || [];
         gameResults.push(gameResult);
         localStorage.setItem('gameResults', JSON.stringify(gameResults));
-    }
-
-    function showModal(message) {
-        const modalMessage = document.getElementById('modal-message');
-        modalMessage.textContent = message;
-        modal.style.display = 'block';
     }
 
     function displayRanking() {
@@ -243,36 +274,58 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         selectedCells.push({ row, col });
-        lastSelectedCell = { row, col };
         currentWord += boardLetters[row][col];
+        lastSelectedCell = { row, col };
 
+        cell.classList.add('selected');
         updateDisplay();
+        updateSelectableCells(); // Añade esta línea para actualizar las celdas seleccionables
     }
 
     function isContiguous(cell1, cell2) {
-        const rowDiff = Math.abs(cell1.row - cell2.row);
-        const colDiff = Math.abs(cell1.col - cell2.col);
-        return rowDiff <= 1 && colDiff <= 1;
+        const deltaRow = Math.abs(cell1.row - cell2.row);
+        const deltaCol = Math.abs(cell1.col - cell2.col);
+        return deltaRow <= 1 && deltaCol <= 1 && (deltaRow + deltaCol > 0);
+    }
+
+    function updateSelectableCells() {
+        // Limpia las celdas seleccionables previas
+        const cells = board.getElementsByClassName('next-selectable');
+        Array.from(cells).forEach(cell => cell.classList.remove('next-selectable'));
+
+        if (lastSelectedCell) {
+            const directions = [
+                { row: -1, col: -1 }, { row: -1, col: 0 }, { row: -1, col: 1 },
+                { row: 0, col: -1 },                   { row: 0, col: 1 },
+                { row: 1, col: -1 }, { row: 1, col: 0 }, { row: 1, col: 1 }
+            ];
+
+            directions.forEach(direction => {
+                const newRow = lastSelectedCell.row + direction.row;
+                const newCol = lastSelectedCell.col + direction.col;
+                if (newRow >= 0 && newRow < boardSize && newCol >= 0 && newCol < boardSize) {
+                    const cell = board.querySelector(`[data-row="${newRow}"][data-col="${newCol}"]`);
+                    if (cell && !selectedCells.some(c => c.row === newRow && c.col === newCol)) {
+                        cell.classList.add('next-selectable');
+                    }
+                }
+            });
+        }
     }
 
     function updateDisplay() {
-        const cells = board.querySelectorAll('div');
-        cells.forEach(cell => {
-            const row = parseInt(cell.dataset.row, 10);
-            const col = parseInt(cell.dataset.col, 10);
-            cell.classList.remove('selected', 'last-selected', 'next-selectable');
+        currentWordDisplay.textContent = currentWord;
+        foundWordsDisplay.innerHTML = foundWords.join('<br>');
+        scoreDisplay.textContent = `Puntuación: ${score}`;
 
-            if (selectedCells.some(c => c.row === row && c.col === col)) {
-                cell.classList.add('selected');
-            }
+        const cells = board.getElementsByClassName('selected');
+        Array.from(cells).forEach(cell => cell.classList.remove('selected'));
 
-            if (lastSelectedCell && lastSelectedCell.row === row && lastSelectedCell.col === col) {
-                cell.classList.add('last-selected');
-            }
+        selectedCells.forEach(cell => {
+            const cellElement = board.querySelector(`[data-row="${cell.row}"][data-col="${cell.col}"]`);
+            cellElement.classList.add('selected');
         });
 
-        currentWordDisplay.textContent = currentWord;
-        scoreDisplay.textContent = 'Puntuación: ' + score;
-        foundWordsDisplay.textContent = 'Palabras encontradas: ' + foundWords.join(', ');
+        updateSelectableCells(); 
     }
 });

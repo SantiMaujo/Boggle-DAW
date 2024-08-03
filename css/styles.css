@@ -176,8 +176,8 @@ button:hover {
 
 /* Colores para las letras seleccionadas y el borde */
 .selected {
-    background-color: orange;
-    color: white;
+    background-color: orangered;
+    color: yellow;
 }
 
 .last-selected {
@@ -186,7 +186,7 @@ button:hover {
 
 /* Colores para las letras que pueden ser seleccionadas */
 .next-selectable {
-    background-color: lightgreen;
+    color: orange
 }
 
 /* Estilos para el ranking */
@@ -254,33 +254,59 @@ button:hover {
 }
 
 /* Modal */
+/* Modal (background) */
 .modal {
-    position: fixed;
-    top: 0;
+    display: none; /* Ocultado por defecto */
+    position: fixed; /* Fijo en la pantalla */
+    z-index: 1000; /* Asegúrate de que esté por encima del contenido */
     left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    top: 0;
+    width: 100%; /* Ancho completo */
+    height: 100%; /* Alto completo */
+    overflow: auto; /* Agrega barra de desplazamiento si es necesario */
+    background-color: rgba(0,0,0,0.4); /* Fondo negro con opacidad */
 }
 
+/* Modal Content */
 .modal-content {
-    background-color: white;
+    background-color: #fefefe;
+    margin: auto; /* Centra el contenido horizontalmente */
     padding: 20px;
-    border-radius: 5px;
-    width: 80%;
-    max-width: 500px;
-    position: relative;
+    border: 1px solid #888;
+    width: 80%; /* Ancho del contenido ajustado para móviles */
+    max-width: 500px; /* Ancho máximo del contenido */
+    position: absolute; /* Posiciona el modal contenido */
+    top: 50%; /* Ajusta la posición desde el borde superior */
+    left: 50%; /* Ajusta la posición desde el borde izquierdo */
+    transform: translate(-50%, -50%); /* Centra el modal tanto vertical como horizontalmente */
+    box-sizing: border-box; /* Asegura que padding y border se incluyan en el ancho total */
 }
 
+/* Close Button */
 .close {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
     cursor: pointer;
+}
+
+/* Media Queries */
+@media (max-width: 600px) {
+    .modal-content {
+        width: 90%; /* Ancho del contenido ajustado para pantallas más pequeñas */
+        max-width: none; /* Elimina el ancho máximo en pantallas más pequeñas */
+    }
+
+    .close {
+        font-size: 24px; /* Tamaño del botón de cerrar reducido para pantallas más pequeñas */
+    }
 }
 
 /* Media queries para responsividad */
@@ -350,6 +376,7 @@ button:hover {
         font-size: 16px;
     }
 }
+
 /* Palabra actual y botones enviar y borrar */
 #current-word-container {
     text-align: center;
