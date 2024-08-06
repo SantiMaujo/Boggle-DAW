@@ -183,15 +183,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function showModal(message, isRanking = false) {
         const modalMessage = document.getElementById('modal-message');
+        const rankingContent = document.getElementById('ranking-content');
+    
+        // Limpia el contenido del modal
+        modalMessage.textContent = '';
+        rankingContent.innerHTML = '';
+    
         if (isRanking) {
             displayRanking();
-            modalMessage.innerHTML = '';  // Limpia el mensaje de la modal
         } else {
             modalMessage.textContent = message;
         }
         modal.style.display = 'block';
     }
-
+    
     function saveGameResult() {
         const gameResult = {
             playerName,
